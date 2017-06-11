@@ -1,0 +1,27 @@
+nginx:
+  image: fink3l/nginx:latest
+  ports:
+    - 4000:80
+  volumes_from:
+    - fpm:rw
+  environment:
+    - NGINX_HOST=localhost
+    - NGINX_PORT=80
+  links:
+    - fpm
+fpm:
+  image: fink3l/fpm:latest
+  volumes:
+    - ./:/usr/share/nginx/html:rw
+  links:
+    - postgres
+postgres:
+  image: postgres:latest
+  ports:
+    - 5434:5432
+  volumes:
+    - ./.datadir/postgres:/data/postgres
+  environment:
+    POSTGRES_PASSWORD: 123 
+    POSTGRES_USER: postgres
+    PGDATA : /data/postgres
