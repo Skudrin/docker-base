@@ -2,6 +2,8 @@ nginx:
   image: fink3l/nginx:latest
   ports:
     - 4000:80
+  volumes:
+    - ./.datadir/nginx/conf.d:/etc/nginx/conf.d
   volumes_from:
     - fpm:rw
   environment:
