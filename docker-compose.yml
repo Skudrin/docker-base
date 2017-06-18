@@ -1,7 +1,7 @@
 nginx:
   image: fink3l/nginx:latest
   ports:
-    - 4000:80
+    - 80:80
   volumes:
     - ./.datadir/nginx/conf.d:/etc/nginx/conf.d
   volumes_from:
@@ -11,12 +11,16 @@ nginx:
     - NGINX_PORT=80
   links:
     - fpm
+
 fpm:
   image: fink3l/fpm:latest
   volumes:
     - ./:/usr/share/nginx/html:rw
+    - /usr/share/nginx/html/.datadir/
+    - .datadir/fpm/php.ini:/usr/local/etc/php/php.ini
   links:
     - postgres
+
 postgres:
   image: postgres:latest
   ports:
@@ -27,3 +31,12 @@ postgres:
     POSTGRES_PASSWORD: 123 
     POSTGRES_USER: postgres
     PGDATA : /data/postgres
+
+composer:
+  image: composer/composer:php7
+  command: install
+  working_dir: /usr/share/nginx/html
+  volumes_from:
+    - fpm:rw
+  links:
+    - fpm
